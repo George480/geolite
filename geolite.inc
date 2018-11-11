@@ -25,7 +25,13 @@
 */
 /*
 
+This product includes GeoLite2 data created by MaxMind, available from http://www.maxmind.com
+
+*/
+/*
+
 Credits:
+    MaxMind - GeoLite2
     Alex "Y_Less" Cole - sscanf
     Andy Skelton - ordering by `ip_to` (avoidance of range scan)
     Nikolay Bachiyski - ordering by `ip_to` (avoidance of range scan)
