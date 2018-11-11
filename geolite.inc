@@ -27,9 +27,9 @@
 
 Credits:
     Alex "Y_Less" Cole - sscanf
-    Andy Skelton - ordering by ip_to trick (avoidance of range scan)
-    Nikolay Bachiyski - ordering by ip_to trick (avoidance of range scan)
-    Mark Robson - highest ip_from which is less than or equal to the given ip trick (avoidance of next country returned due to gaps)
+    Andy Skelton - ordering by `ip_to` (avoidance of range scan)
+    Nikolay Bachiyski - ordering by `ip_to` (avoidance of range scan)
+    Mark Robson - highest `ip_from` which is less than or equal to the given IP (avoidance of next country returned due to gaps)
 	
 */
 
