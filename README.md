@@ -119,6 +119,14 @@ It opens the databases on startup according to which database exists in [I]scrip
 
 A MySQL version would require non-threaded queries to keep the same usage of functions. If you have any suggestion, please inform me.
 
+Constants:
+```Pawn
+#define MAX_AUTONOMOUS_SYSTEM_LENGTH    95
+#define MAX_COUNTRY_LENGTH              45
+#define MAX_CITY_LENGTH                 64
+#define MAX_UTC_LENGTH                  7
+```
+
 # __Requirements__
 sscanf: https://github.com/maddinat0r/sscanf/releases
 
