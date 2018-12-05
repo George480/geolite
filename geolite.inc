@@ -168,6 +168,7 @@ native GetIpAutonomousSystem(const geolite_ip[], geolite_dest[], geolite_len = s
 native GetIpCountry(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpCity(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpUTC(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
+native IsIpProxy(const geolite_ip[]);
 
 */
 
@@ -295,12 +296,21 @@ stock GetIpUTC(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite
     return 1;
 }
 
+stock IsIpProxy(const geolite_ip[])
+{
+    new geolite_country[MAX_COUNTRY_LENGTH];
+
+    return (GetIpCountry(geolite_ip, geolite_country, MAX_COUNTRY_LENGTH)
+        && !strcmp(geolite_country, "Anonymous Proxy"));
+}
+
 /*
 
 native GetPlayerAutonomousSystem(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerCountry(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerCity(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerUTC(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
+native IsPlayerUsingProxy(playerid);
 
 */
 
@@ -334,6 +344,14 @@ stock GetPlayerUTC(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest)
 
     return (GetPlayerIp(playerid, geolite_ip, sizeof (geolite_ip)) != -1
         && GetIpUTC(geolite_ip, geolite_dest, geolite_len));
+}
+
+stock IsPlayerUsingProxy(playerid)
+{
+    new geolite_ip[16];
+
+    return (GetPlayerIp(playerid, geolite_ip, sizeof (geolite_ip)) != -1
+        && IsIpProxy(geolite_ip));
 }
 
 /*
