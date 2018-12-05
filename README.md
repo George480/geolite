@@ -60,6 +60,12 @@ GetIpUTC(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest)
 ```
   * Stores the UTC offset according to given IP, passed by reference.
   * Returns 1 on success (database file exists in _scriptfiles_ folder) or 0 on failure.
+  
+```Pawn
+IsIpProxy(const geolite_ip[])
+```
+  * Requires country database. 
+  * Returns 1 if the given ip is public proxy otherwise 0. It will also return 0 if database file does not exist in _scriptfiles_ folder
 
 Player-Based Functions:
 ```Pawn
@@ -85,6 +91,13 @@ GetPlayerUTC(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest))
 ```
   * Stores the UTC offset according to given player's IP, passed by reference.
   * Returns 1 on success (database file exists in _scriptfiles_ folder and player is connected) or 0 on failure.
+  
+```Pawn
+IsPlayerUsingProxy(playerid)
+```
+  * Requires country database. 
+  * Returns 1 if the ip of the given player is public proxy otherwise 0. It will also return 0 if database file does not exist in _scriptfiles_ folder
+
 
 # __Usage__
 ```Pawn
@@ -110,12 +123,9 @@ public OnPlayerConnect(playerid)
 # __Extra Notes__
 127.0.0.1 is given as "Unknown" as it is a private IP.
 
-Country and City databases are updated every first Tuesday of every month.
-ASN database is updated every Tuesday.
+Country, City and ASN databases will be updated every first Wednesday of every month.
 
-For a start, I will be updating the databases every month (1 day after their release). If the majority of the users want a weekly update on ASN database, please inform me.
-
-It opens the databases on startup according to which database exists in [I]scriptfiles[/I] folder, therefore if you prefer to use the Country database only, place maxmind_country.db into [I]scriptfiles[/I] folder and not the other two databases.
+It opens the databases on startup according to which database exists in _scriptfiles_ folder, therefore if you prefer to use the Country database only, place maxmind_country.db into _scriptfiles_ folder and not the other two databases.
 
 A MySQL version would require non-threaded queries to keep the same usage of functions. If you have any suggestion, please inform me.
 
