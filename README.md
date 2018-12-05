@@ -121,11 +121,13 @@ public OnPlayerConnect(playerid)
 ```
 
 # __Extra Notes__
-127.0.0.1 is given as "Unknown" as it is a private IP.
+127.0.0.1 is given as "Unknown" because it is a private IP.
 
 Country, City and ASN databases will be updated every first Wednesday of every month.
 
 It opens the databases on startup according to which database exists in _scriptfiles_ folder, therefore if you prefer to use the Country database only, place maxmind_country.db into _scriptfiles_ folder and not the other two databases.
+
+It only detects public proxies and not VPNs.
 
 A MySQL version would require non-threaded queries to keep the same usage of functions. If you have any suggestion, please inform me.
 
