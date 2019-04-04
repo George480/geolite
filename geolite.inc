@@ -298,10 +298,19 @@ stock GetIpUTC(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite
 
 stock IsIpProxy(const geolite_ip[])
 {
-    new geolite_country[MAX_COUNTRY_LENGTH];
+    new geolite_AP[MAX_COUNTRY_LENGTH];
 
-    return (GetIpCountry(geolite_ip, geolite_country, MAX_COUNTRY_LENGTH)
-        && !strcmp(geolite_country, "Anonymous Proxy"));
+    if (GEOLITE_country_db != DB: 0)
+    {
+        return (GetIpCountry(geolite_ip, geolite_AP, MAX_COUNTRY_LENGTH) &&
+            !strcmp(geolite_AP, "Anonymous Proxy"));
+    }
+    else if (GEOLITE_city_db != DB: 0)
+    {
+        return (GetIpCity(geolite_ip, geolite_AP, MAX_COUNTRY_LENGTH) &&
+            !strcmp(geolite_AP, "Anonymous Proxy"));
+    }
+    return 0;
 }
 
 /*
