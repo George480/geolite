@@ -50,7 +50,7 @@ Credits:
 
 #define MAX_AUTONOMOUS_SYSTEM_LENGTH    95
 #define MAX_COUNTRY_LENGTH              45
-#define MAX_CITY_LENGTH                 64
+#define MAX_CITY_LENGTH                 109
 #define MAX_UTC_LENGTH                  7
 
 static stock
