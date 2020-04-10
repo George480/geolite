@@ -32,6 +32,7 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 Credits:
     MaxMind - GeoLite2
+    time zones - TimeZoneDB.com
     Alex "Y_Less" Cole - sscanf
     Andy Skelton - ordering by `ip_to` (avoidance of range scan)
     Nikolay Bachiyski - ordering by `ip_to` (avoidance of range scan)
