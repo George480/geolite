@@ -146,7 +146,7 @@ sscanf: https://github.com/maddinat0r/sscanf/releases
 
 * [MaxMind](https://www.maxmind.com/en/home) - [GeoLite2](https://dev.maxmind.com/geoip/geoip2/geolite2/)
 * [TimeZoneDB.com](https://timezonedb.com/) - time zones
-* [Alex "Y_Less" Cole](https://github.com/Y-Less) - sscanf
+* [Alex "Y_Less" Cole](https://github.com/Y-Less) - [sscanf](https://github.com/maddinat0r/sscanf/releases)
 * [Andy Skelton](https://andy.wordpress.com/author/andy/) - ordering by `ip_to` (avoidance of range scan)
 * Nikolay Bachiyski - ordering by `ip_to` (avoidance of range scan)
 * Mark Robson - highest `ip_from` which is less than or equal to the given IP (avoidance of next country returned due to gaps)
