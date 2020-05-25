@@ -224,7 +224,7 @@ stock GetIpProvince(const geolite_ip[], geolite_dest[], geolite_len = sizeof (ge
                 WHEN 1 THEN subdivision_1_name \
                 ELSE 'Unknown' \
                 END AS subdivision_1_name \
-           FROM country_blocks AS b,country_locations AS l \//The province locations?
+           FROM country_blocks AS b,country_locations AS l \ //The province locations?
           WHERE b.geoname_id=l.geoname_id AND ip_to>=%s \
           ORDER BY ip_to LIMIT 1;",
 
