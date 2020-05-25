@@ -167,6 +167,7 @@ public OnGameModeExit()
 
 native GetIpAutonomousSystem(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpCountry(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
+native GetIpProvince(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpCity(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpUTC(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native IsIpProxy(const geolite_ip[]);
@@ -199,6 +200,37 @@ stock GetIpAutonomousSystem(const geolite_ip[], geolite_dest[], geolite_len = si
     calculations, calculations);
 
     geolite_result = db_query(GEOLITE_asn_db, query);
+    db_get_field(geolite_result, 0, geolite_dest, geolite_len);
+    db_free_result(geolite_result);
+    return 1;
+}
+
+stock GetIpProvince(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest))
+{
+    if (GEOLITE_country_db == DB: 0) return 0;
+    
+    new DBResult: geolite_result,
+
+        geolite_octet1, geolite_octet2, geolite_octet3, geolite_octet4,
+
+        calculations[24], query[245];
+
+    sscanf(geolite_ip, "p<.>dddd", geolite_octet1, geolite_octet2, geolite_octet3, geolite_octet4);
+
+    format(calculations, sizeof (calculations), "(16777216*%d+%d)", geolite_octet1, (65536 * geolite_octet2) + (256 * geolite_octet3) + geolite_octet4);
+    format(query, sizeof (query),
+
+        "SELECT CASE (ip_from<=%s) \
+                WHEN 1 THEN subdivision_1_name \
+                ELSE 'Unknown' \
+                END AS subdivision_1_name \
+           FROM country_blocks AS b,country_locations AS l \//The province locations?
+          WHERE b.geoname_id=l.geoname_id AND ip_to>=%s \
+          ORDER BY ip_to LIMIT 1;",
+
+    calculations, calculations);
+
+    geolite_result = db_query(GEOLITE_country_db, query);//The province db?
     db_get_field(geolite_result, 0, geolite_dest, geolite_len);
     db_free_result(geolite_result);
     return 1;
@@ -318,6 +350,7 @@ stock IsIpProxy(const geolite_ip[])
 
 native GetPlayerAutonomousSystem(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerCountry(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
+native GetIpProvince(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerCity(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerUTC(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native IsPlayerUsingProxy(playerid);
@@ -330,6 +363,14 @@ stock GetPlayerAutonomousSystem(playerid, geolite_dest[], geolite_len = sizeof (
 
     return (GetPlayerIp(playerid, geolite_ip, sizeof (geolite_ip)) != -1
         && GetIpAutonomousSystem(geolite_ip, geolite_dest, geolite_len));
+}
+
+stock GetPlayerProvince(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest))
+{
+    new geolite_ip[16];
+
+    return (GetPlayerIp(playerid, geolite_ip, sizeof (geolite_ip)) != -1
+        && GetIpProvince(geolite_ip, geolite_dest, geolite_len));
 }
 
 stock GetPlayerCountry(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest))
