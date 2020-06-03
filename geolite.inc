@@ -52,6 +52,7 @@ Credits:
 #define MAX_AUTONOMOUS_SYSTEM_LENGTH    95
 #define MAX_COUNTRY_LENGTH              45
 #define MAX_CITY_LENGTH                 109
+#define MAX_PROVINCE_LENGTH             53
 #define MAX_UTC_LENGTH                  7
 
 static stock
@@ -59,7 +60,8 @@ static stock
 
     DB: GEOLITE_country_db,
     DB: GEOLITE_city_db,
-    DB: GEOLITE_asn_db;
+    DB: GEOLITE_asn_db,
+    DB: GEOLITE_province_db;
 
 public OnFilterScriptInit()
 {
@@ -168,6 +170,7 @@ public OnGameModeExit()
 native GetIpAutonomousSystem(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpCountry(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpCity(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
+native GetIpProvince(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetIpUTC(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest));
 native IsIpProxy(const geolite_ip[]);
 
@@ -266,6 +269,37 @@ stock GetIpCity(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolit
     return 1;
 }
 
+stock GetIpProvince(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest))
+{
+    if (GEOLITE_province_db == DB: 0) return 0;
+
+    new DBResult: geolite_result,
+
+        geolite_octet1, geolite_octet2, geolite_octet3, geolite_octet4,
+
+        calculations[24], query[261];
+
+    sscanf(geolite_ip, "p<.>dddd", geolite_octet1, geolite_octet2, geolite_octet3, geolite_octet4);
+
+    format(calculations, sizeof (calculations), "(16777216*%d+%d)", geolite_octet1, (65536 * geolite_octet2) + (256 * geolite_octet3) + geolite_octet4);
+    format(query, sizeof (query),
+
+        "SELECT CASE (ip_from<=%s) \
+                WHEN 1 THEN subdivision_1_name \
+                ELSE 'Unknown' \
+                END AS subdivision_1_name \
+           FROM province_blocks AS b,province_locations AS l \
+          WHERE b.geoname_id=l.geoname_id AND ip_to>=%s \
+          ORDER BY ip_to LIMIT 1;",
+
+    calculations, calculations);
+
+    geolite_result = db_query(GEOLITE_province_db, query);
+    db_get_field(geolite_result, 0, geolite_dest, geolite_len);
+    db_free_result(geolite_result);
+    return 1;
+}
+
 stock GetIpUTC(const geolite_ip[], geolite_dest[], geolite_len = sizeof (geolite_dest))
 {
     if (GEOLITE_city_db == DB: 0) return 0;
@@ -319,6 +353,7 @@ stock IsIpProxy(const geolite_ip[])
 native GetPlayerAutonomousSystem(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerCountry(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerCity(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
+native GetPlayerProvince(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native GetPlayerUTC(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest));
 native IsPlayerUsingProxy(playerid);
 
@@ -346,6 +381,14 @@ stock GetPlayerCity(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest
 
     return (GetPlayerIp(playerid, geolite_ip, sizeof (geolite_ip)) != -1
         && GetIpCity(geolite_ip, geolite_dest, geolite_len));
+}
+
+stock GetPlayerProvince(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest))
+{
+    new geolite_ip[16];
+
+    return (GetPlayerIp(playerid, geolite_ip, sizeof (geolite_ip)) != -1
+        && GetIpProvince(geolite_ip, geolite_dest, geolite_len));
 }
 
 stock GetPlayerUTC(playerid, geolite_dest[], geolite_len = sizeof (geolite_dest))
@@ -391,6 +434,12 @@ static geolite_open_dbs()
         GEOLITE_city_db = db_open("maxmind_city.db");
         db_free_result(db_query(GEOLITE_city_db, "PRAGMA query_only = ON"));
     }
+    
+    if (fexist("maxmind_province.db"))
+    {
+        GEOLITE_province_db = db_open("maxmind_province.db");
+        db_free_result(db_query(GEOLITE_province_db, "PRAGMA query_only = ON"));
+    }
 }
 
 static geolite_close_dbs()
@@ -408,5 +457,10 @@ static geolite_close_dbs()
     if (GEOLITE_city_db != DB: 0)
     {
         db_close(GEOLITE_city_db);
+    }
+    
+    if (GEOLITE_province_db != DB: 0)
+    {
+        db_close(GEOLITE_province_db);
     }
 }
